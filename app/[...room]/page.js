@@ -2,13 +2,13 @@
 
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import moment from "moment/moment";
+import dayjs from "dayjs";
 export default function RoomDetails() {
   const [room, setRoom] = useState(null);
   const searchParams = useSearchParams();
 
+  const id = searchParams.get("room");
   useEffect(() => {
-    const id = searchParams.get("room");
     fetch("http://localhost:3000/api/getRooms", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -26,7 +26,20 @@ export default function RoomDetails() {
   const [amount, setAmount] = useState();
   const handlesubmit = (e) => {
     e.preventDefault();
-    console.log({ email, starttime, endtime });
+    fetch("http://localhost:3000/api/addBookings", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        room_id: id,
+        room_no: room.room_no,
+        email,
+        price: amount,
+        starttime,
+        endtime,
+      }),
+    })
+      .then((res) => res.json())
+      .then((data) => console.log(data));
   };
   return (
     <>
@@ -59,10 +72,7 @@ export default function RoomDetails() {
               value={endtime}
               onChange={(e) => {
                 setEndTime(e.target.value);
-                const start = moment(starttime, "HH:MM");
-                const end = moment(endtime, "HH:MM");
-                const diff = end.diff(start, "hours");
-                setAmount(diff * room.price);
+                console.log({ endtime, starttime });
               }}
             />
             <p>₹ {amount}</p>

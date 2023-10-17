@@ -6,10 +6,10 @@ function Navbar() {
     <nav className="w-1/4 h-[70px] border-2 border-black rounded-full flex items-center justify-center">
       <ul className="flex w-full items-center justify-evenly">
         <li className=" font-bold hover:underline">
-          <Link href="/">Hotels</Link>
+          <Link href="/">Rooms</Link>
         </li>
         <li className=" font-bold hover:underline">
-          <Link href="/bookings/:tickedId">Bookings</Link>
+          <Link href="/bookings">Bookings</Link>
         </li>
       </ul>
     </nav>
