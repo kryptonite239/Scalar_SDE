@@ -30,6 +30,19 @@ export default function BookingCard({ details }) {
         setEditAccess(!editAccess);
       });
   };
+  const handleCancel = (e) => {
+    e.preventDefault();
+    fetch("http://localhost:3000/api/addBookings", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        id: details._id,
+        bookingDetails: {
+          isBooked: false,
+        },
+      }),
+    }).then(() => setReciept({ ...reciept, isBooked: false }));
+  };
   return (
     <div className="w-full h-[150px] flex  flex-col align-center">
       <ul className="w-full h-full flex align-center justify-evenly">
@@ -39,16 +52,21 @@ export default function BookingCard({ details }) {
         <li>End Time: {reciept.endtime}</li>
         <li>
           Booking Status:
-          {reciept.isBooked == true ? <>Booked</> : <>Not Booked</>}
+          {reciept.isBooked == true ? <>Booked</> : <>Cancelled</>}
         </li>
-        <div>
-          <Button onClick={() => setEditAccess(!editAccess)}>Edit</Button>
-          <Button variant={"destructive"}>Cancel Booking</Button>
-        </div>
+        {reciept.isBooked && (
+          <div>
+            <Button onClick={() => setEditAccess(!editAccess)}>Edit</Button>
+            <Button variant={"destructive"} onClick={handleCancel}>
+              Cancel Booking
+            </Button>
+          </div>
+        )}
       </ul>
       {editAccess && (
         <div className="w-full flex justify-center">
           <form onSubmit={handleSubmit}>
+            <input type="number" />
             <input
               type="email"
               value={dummy.email}
