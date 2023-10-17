@@ -32,21 +32,23 @@ export default function RoomDetails() {
     let overlap = false;
     if (room.allBookings.length > 0) {
       room.allBookings.map((booking) => {
-        const st = new dayjs(booking.starttime);
-        const en = new dayjs(booking.endtime);
-        const start = new dayjs(starttime);
-        const end = new dayjs(endtime);
-        const stDiff = start.diff(st, "h") / 24;
-        const enDiff = end.diff(en, "h") / 24;
-        const startDiff = start.diff(en, "h") / 24;
-        const endDiff = end.diff(st, "h") / 24;
-        if (
-          (stDiff <= 0 && endDiff >= 0) ||
-          (stDiff <= 0 && startDiff >= 0) ||
-          (endDiff >= 0 && enDiff <= 0)
-        ) {
-          console.log("Booking overlap");
-          overlap = true;
+        if (booking.isBooked == true) {
+          const st = new dayjs(booking.starttime);
+          const en = new dayjs(booking.endtime);
+          const start = new dayjs(starttime);
+          const end = new dayjs(endtime);
+          const stDiff = start.diff(st, "h") / 24;
+          const enDiff = end.diff(en, "h") / 24;
+          const startDiff = start.diff(en, "h") / 24;
+          const endDiff = end.diff(st, "h") / 24;
+          if (
+            (stDiff <= 0 && endDiff >= 0) ||
+            (stDiff <= 0 && startDiff >= 0) ||
+            (endDiff >= 0 && enDiff <= 0)
+          ) {
+            console.log("Booking overlap");
+            overlap = true;
+          }
         }
       });
     }

@@ -1,13 +1,13 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
-
 export default function BookingCard({ details }) {
   const [reciept, setReciept] = useState(details);
   const [dummy, setDummy] = useState(reciept);
   const [editAccess, setEditAccess] = useState(false);
   const handleSubmit = (e) => {
     e.preventDefault();
+
     fetch("http://localhost:3000/api/addBookings", {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
@@ -25,9 +25,13 @@ export default function BookingCard({ details }) {
       }),
     })
       .then((res) => res.json())
-      .then(() => {
-        setReciept(dummy);
-        setEditAccess(!editAccess);
+      .then((data) => {
+        if (data?.status == 404) {
+          setDummy(reciept);
+        } else {
+          setReciept(dummy);
+          setEditAccess(!editAccess);
+        }
       });
   };
   const handleCancel = (e) => {
@@ -66,7 +70,6 @@ export default function BookingCard({ details }) {
       {editAccess && (
         <div className="w-full flex justify-center">
           <form onSubmit={handleSubmit}>
-            <input type="number" />
             <input
               type="email"
               value={dummy.email}
@@ -75,7 +78,7 @@ export default function BookingCard({ details }) {
               required
             />
             <input
-              type="time"
+              type="date"
               value={dummy.starttime}
               onChange={(e) =>
                 setDummy({ ...dummy, starttime: e.target.value })
@@ -83,7 +86,7 @@ export default function BookingCard({ details }) {
               required
             />
             <input
-              type="time"
+              type="date"
               value={dummy.endtime}
               onChange={(e) => setDummy({ ...dummy, endtime: e.target.value })}
               required
