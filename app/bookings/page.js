@@ -12,8 +12,10 @@ export default function BookingsPage() {
   }, []);
   return (
     <>
-      {bookings && (
-        <div>
+      {bookings == null ? (
+        <>No Bookings to be shown!</>
+      ) : (
+        <div className="w-full">
           {bookings.map((booking) => {
             return (
               <div key={booking._id}>

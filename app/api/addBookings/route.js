@@ -25,3 +25,22 @@ export async function POST(request) {
     message: "Room Booked",
   });
 }
+export async function PUT(request) {
+  const body = await request.json();
+
+  const { id, bookingDetails } = body;
+  const book = await Bookings.findOneAndUpdate(
+    { _id: id },
+    {
+      room_id: bookingDetails.room_id,
+      room_no: bookingDetails.room_no,
+      email: bookingDetails.email,
+      starttime: bookingDetails.starttime,
+      endtime: bookingDetails.endtime,
+      price: bookingDetails.price,
+      isBooked: bookingDetails.isBooked,
+    }
+  );
+
+  return NextResponse.json({ message: "Details Updated" });
+}
