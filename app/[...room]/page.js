@@ -2,7 +2,7 @@
 
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
-
+import moment from "moment/moment";
 export default function RoomDetails() {
   const [room, setRoom] = useState(null);
   const searchParams = useSearchParams();
@@ -57,7 +57,13 @@ export default function RoomDetails() {
               placeholder="End time"
               required
               value={endtime}
-              onChange={(e) => setEndTime(e.target.value)}
+              onChange={(e) => {
+                setEndTime(e.target.value);
+                const start = moment(starttime, "HH:MM");
+                const end = moment(endtime, "HH:MM");
+                const diff = end.diff(start, "hours");
+                setAmount(diff * room.price);
+              }}
             />
             <p>₹ {amount}</p>
             <button type="submit">Submit</button>
