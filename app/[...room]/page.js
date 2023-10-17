@@ -1,10 +1,15 @@
 "use client";
 
 import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import dayjs from "dayjs";
+import { InputText } from "primereact/inputtext";
+import { Calendar } from "primereact/calendar";
+import { Button } from "primereact/button";
+import { Toast } from "primereact/toast";
 export default function RoomDetails() {
   const [room, setRoom] = useState(null);
+  const toast = useRef(null);
   const router = useRouter();
   const searchParams = useSearchParams();
   const [email, setemail] = useState("");
@@ -23,7 +28,6 @@ export default function RoomDetails() {
         setRoom(data.room);
       });
     handlePrice();
-    // setAmount(final);
   }, [endtime, starttime]);
 
   const handlesubmit = (e) => {
@@ -46,7 +50,20 @@ export default function RoomDetails() {
             (stDiff <= 0 && startDiff >= 0) ||
             (endDiff >= 0 && enDiff <= 0)
           ) {
-            console.log("Booking overlap");
+            toast.current.show({
+              severity: "error",
+              summary: "Overlap Alert",
+              detail: `Room Is Already Booked During ${starttime} to ${endtime} `,
+              life: 3000,
+            });
+            overlap = true;
+          } else if (end.diff(start) / 24 <= 0) {
+            toast.current.show({
+              severity: "error",
+              summary: "Incorrect Details",
+              detail: "Please Select Dates Again!",
+              life: 3000,
+            });
             overlap = true;
           }
         }
@@ -67,6 +84,12 @@ export default function RoomDetails() {
       })
         .then((res) => res.json())
         .then((data) => console.log(data));
+      toast.current.show({
+        severity: "success",
+        summary: "Booked!",
+        detail: "Room Succesfully Booked!",
+        life: 3000,
+      });
       router.push("/");
     }
   };
@@ -81,39 +104,68 @@ export default function RoomDetails() {
   return (
     <>
       {room && (
-        <div>
-          <ul>
+        <div className="w-1/3 h-1/2 flex flex-col justify-center items-center mt-40">
+          <Toast ref={toast} />
+          <ul className=" w-full h-[40px] flex justify-center items-center gap-4 text-2xl">
             <li>Room Number: {room.room_no}</li>
-            <li>Type:{room.type}</li>
-            <li>Price per hour: {room.price}</li>
+            <li>Type: {room.type}</li>
+            <li>Price per night: ₹{room.price}</li>
           </ul>
-          <form onSubmit={handlesubmit}>
-            <input
-              type="email"
-              placeholder="Enter email"
-              required
-              value={email}
-              onChange={(e) => setemail(e.target.value)}
-            />
-            <input
-              type="date"
-              placeholder="Start time"
-              required
-              value={starttime}
-              onChange={(e) => {
-                setStartTime(e.target.value);
-              }}
-            />
-            <input
-              type="date"
-              placeholder="End time"
-              required
-              value={endtime}
-              onChange={(e) => setEndTime(e.target.value)}
-            />
-            <p>₹ {amount * room.price}</p>
-            <button type="submit">Submit</button>
-          </form>
+          <div className="flex w-full h-[300px] ">
+            <form
+              onSubmit={handlesubmit}
+              className="flex w-full h-full flex-col items-center justify-center gap-3"
+            >
+              <div className="flex w-full h-[50px] items-center justify-center gap-5">
+                <span className="p-float-label">
+                  <InputText
+                    type="email"
+                    placeholder="Enter email"
+                    required
+                    value={email}
+                    onChange={(e) => setemail(e.target.value)}
+                  />
+                  <label htmlFor="email">E-mail</label>
+                </span>
+                <span className="p-float-label">
+                  <Calendar
+                    required
+                    value={starttime}
+                    onChange={(e) => {
+                      setStartTime(e.value);
+                    }}
+                    dateFormat="dd/mm/yy"
+                    showIcon
+                  />
+                  <label htmlFor="start_date">Start Date</label>
+                </span>
+                <span className="p-float-label">
+                  <Calendar
+                    required
+                    value={endtime}
+                    onChange={(e) => setEndTime(e.value)}
+                    dateFormat="dd/mm/yy"
+                    showIcon
+                  />
+                  <label htmlFor="end_date">End Date</label>
+                </span>
+              </div>
+              <p>
+                ₹{" "}
+                {amount > 0
+                  ? amount * room.price
+                  : toast.current.show({
+                      severity: "error",
+                      summary: "Incorrect Details",
+                      detail: "Please Select Dates Again!",
+                      life: 3000,
+                    })}
+              </p>
+              <Button type="submit" outlined severity="success">
+                Submit
+              </Button>
+            </form>
+          </div>
         </div>
       )}
     </>

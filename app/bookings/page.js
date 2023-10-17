@@ -2,42 +2,73 @@
 
 import { useEffect, useState } from "react";
 import BookingCard from "../components/BookingCard";
+import { DataTable } from "primereact/datatable";
+import { Column } from "primereact/column";
 
 export default function BookingsPage() {
   const [bookings, setBookings] = useState(null);
-  const [rooms, setRooms] = useState(null);
-  const roomsList = [];
   useEffect(() => {
     fetch("http://localhost:3000/api/getBookings")
       .then((res) => res.json())
       .then((data) => setBookings(data.bookings));
-    fetch("http://localhost:3000/api/getRooms")
-      .then((res) => res.json())
-      .then((data) => {
-        setRooms(data.rooms);
-        data.rooms.map((room) => {
-          roomsList.push({
-            no: room.room_no,
-            id: room._id,
-            type: room.type,
-            price: room.price,
-          });
-        });
-      });
   }, []);
   return (
     <>
       {bookings == null ? (
         <>No Bookings to be shown!</>
       ) : (
-        <div className="w-full">
-          {bookings.map((booking) => {
-            return (
-              <div key={booking._id}>
-                <BookingCard details={booking} rooms={roomsList} />
-              </div>
-            );
-          })}
+        <div className="card">
+          <DataTable
+            value={bookings}
+            tableStyle={{ minWidth: "50rem" }}
+            showGridlines
+            paginator
+            rows={5}
+            editMode="row"
+            dataKey="id"
+          >
+            <Column
+              field="room_no"
+              header="Number"
+              sortable
+              style={{ width: "25%" }}
+            ></Column>
+            <Column
+              field="email"
+              header="E-Mail"
+              sortable
+              style={{ width: "25%" }}
+            ></Column>
+            <Column
+              field="starttime"
+              header="Start Date"
+              sortable
+              style={{ width: "25%" }}
+            ></Column>
+            <Column
+              field="endtime"
+              header="End Date"
+              sortable
+              style={{ width: "25%" }}
+            ></Column>
+            <Column
+              field="price"
+              header="Price"
+              sortable
+              style={{ width: "25%" }}
+            ></Column>
+            <Column
+              field="isBooked"
+              header="Status"
+              sortable
+              style={{ width: "25%" }}
+            ></Column>
+            <Column
+              rowEditor
+              headerStyle={{ width: "10%", minWidth: "8rem" }}
+              bodyStyle={{ textAlign: "center" }}
+            ></Column>
+          </DataTable>
         </div>
       )}
     </>

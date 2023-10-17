@@ -8,12 +8,14 @@ export async function POST(request) {
   const body = await request.json();
   const { room_id, room_no, email, starttime, endtime, price } = body;
   console.log({ room_id, room_no, email, starttime, endtime, price });
+  const startDate = new Date(starttime).toLocaleDateString();
+  const endDate = new Date(endtime).toLocaleDateString();
   const booking = new Bookings({
     room_id: room_id,
     room_no: room_no,
     email,
-    starttime: starttime,
-    endtime: endtime,
+    starttime: startDate,
+    endtime: endDate,
     price,
     isBooked: true,
   });
