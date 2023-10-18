@@ -4,7 +4,6 @@ import "primereact/resources/primereact.min.css";
 import "primeicons/primeicons.css";
 import "primeflex/primeflex.css";
 import { PrimeReactProvider } from "primereact/api";
-import Tailwind from "primereact/passthrough/tailwind";
 import Navbar from "./components/Navbar";
 
 export const metadata = {
@@ -16,7 +15,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body className="w-full h-[100vh] p-3 flex flex-col items-center">
-        <PrimeReactProvider value={{ unstyled: true, pt: Tailwind }}>
+        <PrimeReactProvider>
           <Navbar />
           {children}
         </PrimeReactProvider>
