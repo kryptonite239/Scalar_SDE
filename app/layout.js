@@ -15,7 +15,7 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body className="w-full h-full p-3 flex flex-col items-center justify-start">
+      <body className="w-full h-[100vh] p-3 flex flex-col items-center">
         <PrimeReactProvider value={{ unstyled: false, pt: Tailwind }}>
           <Navbar />
           {children}

@@ -18,7 +18,7 @@ export default function RoomDetails() {
   const [amount, setAmount] = useState(1);
   const id = searchParams.get("room");
   useEffect(() => {
-    fetch("https://scalar-sde.vercel.app/api/getRooms", {
+    fetch("/api/getRooms", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ id }),
@@ -102,25 +102,22 @@ export default function RoomDetails() {
   return (
     <>
       {room && (
-        <div className="w-1/3 h-1/2 flex flex-col justify-center items-center mt-40">
+        <div className="w-full  h-[100vh] flex flex-col justify-evenly items-center">
           <Toast ref={toast} />
-          <ul className=" w-full h-[40px] flex justify-center items-center gap-4 text-2xl">
-            <li>Room Number: {room.room_no}</li>
-            <li>Type: {room.type}</li>
-            <li>Price per night: ₹{room.price}</li>
-          </ul>
-          <div className="flex w-full h-[300px] ">
+
+          <div className="flex w-full h-full ">
             <form
               onSubmit={handlesubmit}
-              className="flex w-full h-full flex-col items-center justify-center gap-3"
+              className="flex w-full h-full flex-col items-center gap-3 mt-10"
             >
-              <div className="flex w-full h-[50px] items-center justify-center gap-5">
+              <div className="flex md:h-[300px] md:w-[700px] h-[250px] w-[300px] items-center justify-center border-2 border-black rounded-lg bg-slate-50 flex-col gap-5">
                 <span className="p-float-label">
                   <InputText
                     type="email"
                     placeholder="Enter email"
                     required
                     value={email}
+                    className="w-[200px] lg:w-[500px] md:w-[300px]"
                     onChange={(e) => setemail(e.target.value)}
                   />
                   <label htmlFor="email">E-mail</label>
@@ -134,6 +131,7 @@ export default function RoomDetails() {
                     }}
                     dateFormat="dd/mm/yy"
                     showIcon
+                    className="w-[200px] lg:w-[500px] md:w-[300px]"
                   />
                   <label htmlFor="start_date">Start Date</label>
                 </span>
@@ -146,24 +144,37 @@ export default function RoomDetails() {
                     }}
                     dateFormat="dd/mm/yy"
                     showIcon
+                    className="w-[200px] lg:w-[500px] md:w-[300px]"
                   />
                   <label htmlFor="end_date">End Date</label>
                 </span>
               </div>
-              <p>
-                ₹{" "}
-                {amount > 0
-                  ? amount * room.price
-                  : toast.current.show({
-                      severity: "error",
-                      summary: "Incorrect Details",
-                      detail: "Please Select Dates Again!",
-                      life: 3000,
-                    })}
-              </p>
-              <Button type="submit" outlined severity="success">
-                Submit
-              </Button>
+
+              <div className="flex md:h-[150px] md:w-[700px] h-[150px] w-[300px] items-center justify-between border-2 border-black rounded-lg bg-slate-50">
+                <ul className=" w-1/2 h-full flex flex-col justify-center items-center font-semibold gap-2 lg:text-[17px]  text-[11px] md:text-[13px]">
+                  <li>Room Number: {room.room_no}</li>
+                  <li>Type: {room.type}</li>
+                  <li>Price per night: ₹{room.price}</li>
+                </ul>
+                <div className="flex flex-col w-1/2 h-full items-center justify-evenly">
+                  <p className="text-[20px] font-bold text-green-600">
+                    ₹{" "}
+                    {amount > 0
+                      ? amount * room.price
+                      : toast.current.show({
+                          severity: "error",
+                          summary: "Incorrect Details",
+                          detail: "Please Select Dates Again!",
+                          life: 3000,
+                        })}
+                  </p>
+                  <div>
+                    <Button type="submit" severity="success">
+                      Book
+                    </Button>
+                  </div>
+                </div>
+              </div>
             </form>
           </div>
         </div>

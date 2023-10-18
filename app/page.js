@@ -8,7 +8,7 @@ export default function Home() {
   const [selectedProduct, setSelectedProduct] = useState(null);
   const router = useRouter();
   useEffect(() => {
-    fetch("https://scalar-sde.vercel.app/api/getRooms")
+    fetch("/api/getRooms")
       .then((res) => res.json())
       .then((data) => {
         setRooms(data.rooms);
@@ -27,7 +27,7 @@ export default function Home() {
     return formatCurrency(room.price);
   };
   return (
-    <main className="card w-full mt-10 flex items-center justify-center">
+    <main className="card w-full mt-10">
       <DataTable
         value={rooms}
         resizableColumns
