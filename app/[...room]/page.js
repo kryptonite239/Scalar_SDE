@@ -29,47 +29,35 @@ export default function RoomDetails() {
       });
     handlePrice();
   }, [endtime, starttime]);
-
   const handlesubmit = (e) => {
     e.preventDefault();
-    console.log(room);
-    let overlap = false;
-    if (room.allBookings.length > 0) {
-      room.allBookings.map((booking) => {
-        if (booking.isBooked == true) {
-          const st = new dayjs(booking.starttime);
-          const en = new dayjs(booking.endtime);
-          const start = new dayjs(starttime);
-          const end = new dayjs(endtime);
-          const stDiff = start.diff(st, "h") / 24;
-          const enDiff = end.diff(en, "h") / 24;
-          const startDiff = start.diff(en, "h") / 24;
-          const endDiff = end.diff(st, "h") / 24;
-          if (
-            (stDiff <= 0 && endDiff >= 0) ||
-            (stDiff <= 0 && startDiff >= 0) ||
-            (endDiff >= 0 && enDiff <= 0)
-          ) {
-            toast.current.show({
-              severity: "error",
-              summary: "Overlap Alert",
-              detail: `Room Is Already Booked During ${starttime} to ${endtime} `,
-              life: 3000,
-            });
-            overlap = true;
-          } else if (end.diff(start) / 24 <= 0) {
-            toast.current.show({
-              severity: "error",
-              summary: "Incorrect Details",
-              detail: "Please Select Dates Again!",
-              life: 3000,
-            });
-            overlap = true;
-          }
+    let overlapping = false;
+    room.allBookings.map((booking) => {
+      if (booking.isBooked) {
+        const st = new dayjs(booking.starttime);
+        const en = new dayjs(booking.endtime);
+        const start = new dayjs(starttime);
+        const end = new dayjs(endtime);
+        const stDiff = start.diff(st, "d");
+        const enDiff = end.diff(en, "d");
+        const startDiff = start.diff(en, "d");
+        const endDiff = end.diff(st, "d");
+        if (
+          (stDiff <= 0 && endDiff >= 0) ||
+          (stDiff <= 0 && startDiff >= 0) ||
+          (endDiff >= 0 && enDiff <= 0)
+        ) {
+          overlapping = true;
+          toast.current.show({
+            severity: "error",
+            summary: "Error",
+            detail: "Room Booking Overlapped",
+            life: 3000,
+          });
         }
-      });
-    }
-    if (!overlap) {
+      }
+    });
+    if (!overlapping) {
       fetch("http://localhost:3000/api/addBookings", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -77,20 +65,30 @@ export default function RoomDetails() {
           room_id: id,
           room_no: room.room_no,
           email,
-          price: amount,
+          price: amount * room.price,
           starttime,
           endtime,
         }),
       })
         .then((res) => res.json())
-        .then((data) => console.log(data));
-      toast.current.show({
-        severity: "success",
-        summary: "Booked!",
-        detail: "Room Succesfully Booked!",
-        life: 3000,
-      });
-      router.push("/");
+        .then((data) => {
+          if (data.status == 404) {
+            toast.current.show({
+              severity: "error",
+              summary: "Error",
+              detail: data.statusText,
+              life: 3000,
+            });
+          } else {
+            toast.current.show({
+              severity: "success",
+              summary: "Booked!",
+              detail: data.statusText,
+              life: 3000,
+            });
+            router.push("/");
+          }
+        });
     }
   };
   const handlePrice = () => {
@@ -143,7 +141,9 @@ export default function RoomDetails() {
                   <Calendar
                     required
                     value={endtime}
-                    onChange={(e) => setEndTime(e.value)}
+                    onChange={(e) => {
+                      setEndTime(e.value);
+                    }}
                     dateFormat="dd/mm/yy"
                     showIcon
                   />

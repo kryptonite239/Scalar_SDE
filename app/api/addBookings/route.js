@@ -7,25 +7,26 @@ export async function POST(request) {
   connectMongo();
   const body = await request.json();
   const { room_id, room_no, email, starttime, endtime, price } = body;
-  console.log({ room_id, room_no, email, starttime, endtime, price });
-  const startDate = new Date(starttime).toLocaleDateString();
-  const endDate = new Date(endtime).toLocaleDateString();
+  const startDate = new dayjs(starttime).format("DD-MM-YYYY");
+  const endDate = new dayjs(endtime).format("DD-MM");
+  const room = await Room.findById(room_id);
   const booking = new Bookings({
     room_id: room_id,
     room_no: room_no,
     email,
-    starttime: startDate,
-    endtime: endDate,
+    starttime: starttime,
+    endtime: endtime,
     price,
     isBooked: true,
   });
   await booking.save();
-  const room = await Room.findById(room_id);
+
   room.allBookings.push(booking);
   await room.save();
 
   return NextResponse.json({
-    message: "Room Booked",
+    status: 201,
+    statusText: "Room Booked Successfully",
   });
 }
 export async function PUT(request) {
@@ -76,16 +77,20 @@ export async function PUT(request) {
 }
 export async function DELETE(request) {
   const body = await request.json();
-  const { _id, room_id } = body;
-  const room = await Room.findById(room_id);
-
-  let date = new Date().toLocaleDateString;
-  date = new dayjs(date);
-  const startDate = new dayjs(body.starttime);
-  const refund = startDate.diff(date, "h");
-  room.allBookings = room.allBookings.filter((booking) => booking._id !== _id);
-  await room.save();
+  const { _id, room_id, room_no, starttime } = body;
+  const date = new dayjs();
+  const start = new dayjs(starttime);
+  // console.log({ date, start });
+  const refund = start.diff(date, "h");
+  const room = await Room.findById({ _id: room_id });
+  let bookings = room.allBookings;
+  bookings = bookings.filter((booking) => booking._id !== _id);
+  await Room.findByIdAndUpdate(
+    { _id: room_id },
+    { allBookings: { ...bookings } }
+  );
   await Bookings.findByIdAndDelete(_id);
+  console.log("Refund ", refund);
   return NextResponse.json({
     status: 201,
     statusText: `${

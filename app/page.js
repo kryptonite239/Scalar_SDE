@@ -1,9 +1,7 @@
 "use client";
-import Room from "./components/Room";
 import { useEffect, useState } from "react";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
-import { Button } from "primereact/button";
 import { useRouter } from "next/navigation";
 export default function Home() {
   const [rooms, setRooms] = useState(null);
@@ -27,9 +25,6 @@ export default function Home() {
   };
   const priceBodyTemplate = (room) => {
     return formatCurrency(room.price);
-  };
-  const selectBodyTemplate = () => {
-    return <Button label="Book" />;
   };
   return (
     <main className="card w-full mt-10 flex items-center justify-center">
@@ -66,10 +61,6 @@ export default function Home() {
           sortable
           style={{ width: "25%" }}
           body={priceBodyTemplate}
-        ></Column>
-        <Column
-          headerStyle={{ width: "4rem" }}
-          body={selectBodyTemplate}
         ></Column>
       </DataTable>
     </main>

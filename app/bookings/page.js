@@ -7,6 +7,7 @@ import { InputText } from "primereact/inputtext";
 import { Calendar } from "primereact/calendar";
 import { Toast } from "primereact/toast";
 import { ContextMenu } from "primereact/contextmenu";
+import { Message } from "primereact/message";
 export default function BookingsPage() {
   const [bookings, setBookings] = useState(null);
   const [selectedBooking, setSelectedBooking] = useState(null);
@@ -26,6 +27,7 @@ export default function BookingsPage() {
   ];
   const deleteBooking = (booking) => {
     let _bookings = [...bookings];
+    console.log(booking);
     fetch("http://localhost:3000/api/addBookings", {
       method: "DELETE",
       headers: { "Content-Type": "application/json" },
@@ -106,7 +108,7 @@ export default function BookingsPage() {
       {bookings == null ? (
         <>No Bookings to be shown!</>
       ) : (
-        <div className="card">
+        <div className="card flex flex-col w-full h-[100vh] gap-5 ">
           <Toast ref={toast} />
           <ContextMenu
             model={menuModel}
@@ -177,6 +179,10 @@ export default function BookingsPage() {
               bodyStyle={{ textAlign: "center" }}
             ></Column>
           </DataTable>
+          <Message
+            text="Right Click To Cancel A Booking"
+            className="w-[300px] mr-auto"
+          />
         </div>
       )}
     </>
