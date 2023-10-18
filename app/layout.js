@@ -16,7 +16,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body className="w-full h-[100vh] p-3 flex flex-col items-center">
-        <PrimeReactProvider value={{ unstyled: false, pt: Tailwind }}>
+        <PrimeReactProvider value={{ unstyled: true, pt: Tailwind }}>
           <Navbar />
           {children}
         </PrimeReactProvider>
