@@ -14,7 +14,7 @@ export default function BookingsPage() {
   const toast = useRef(null);
   const cm = useRef(null);
   useEffect(() => {
-    fetch("http://localhost:3000/api/getBookings")
+    fetch("https://scalar-sde.vercel.app/api/getBookings")
       .then((res) => res.json())
       .then((data) => setBookings(data.bookings));
   }, []);
@@ -28,7 +28,7 @@ export default function BookingsPage() {
   const deleteBooking = (booking) => {
     let _bookings = [...bookings];
     console.log(booking);
-    fetch("http://localhost:3000/api/addBookings", {
+    fetch("https://scalar-sde.vercel.app/api/addBookings", {
       method: "DELETE",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(booking),
@@ -74,7 +74,7 @@ export default function BookingsPage() {
   const onRowEditComplete = (e) => {
     let _bookings = [...bookings];
     let { newData, index } = e;
-    fetch("http://localhost:3000/api/addBookings", {
+    fetch("https://scalar-sde.vercel.app/api/addBookings", {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({

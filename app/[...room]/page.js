@@ -18,7 +18,7 @@ export default function RoomDetails() {
   const [amount, setAmount] = useState(1);
   const id = searchParams.get("room");
   useEffect(() => {
-    fetch("http://localhost:3000/api/getRooms", {
+    fetch("https://scalar-sde.vercel.app/api/getRooms", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ id }),
@@ -58,7 +58,7 @@ export default function RoomDetails() {
       }
     });
     if (!overlapping) {
-      fetch("http://localhost:3000/api/addBookings", {
+      fetch("https://scalar-sde.vercel.app/api/addBookings", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

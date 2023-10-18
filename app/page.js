@@ -8,7 +8,7 @@ export default function Home() {
   const [selectedProduct, setSelectedProduct] = useState(null);
   const router = useRouter();
   useEffect(() => {
-    fetch("http://localhost:3000/api/getRooms")
+    fetch("https://scalar-sde.vercel.app/api/getRooms")
       .then((res) => res.json())
       .then((data) => {
         setRooms(data.rooms);
