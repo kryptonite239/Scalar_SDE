@@ -11,6 +11,11 @@ function Navbar() {
         <li className=" font-bold hover:underline">
           <Link href="/bookings">Bookings</Link>
         </li>
+        <li>
+          <Link href={"https://github.com/kryptonite239/Scalar_SDE"}>
+            <i className="pi pi-github" style={{ fontSize: "1.4rem" }}></i>
+          </Link>
+        </li>
       </ul>
     </nav>
   );
