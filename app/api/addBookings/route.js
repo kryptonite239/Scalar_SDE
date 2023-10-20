@@ -3,6 +3,11 @@ import Bookings from "@/lib/schema/bookings";
 import Room from "@/lib/schema/roomschema";
 import { NextResponse } from "next/server";
 import dayjs from "dayjs";
+export async function GET() {
+  connectMongo();
+  const bookings = await Bookings.find().sort({ price: 1 });
+  return NextResponse.json({ bookings });
+}
 export async function POST(request) {
   connectMongo();
   const body = await request.json();

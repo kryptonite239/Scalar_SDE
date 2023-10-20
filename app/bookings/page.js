@@ -14,7 +14,7 @@ export default function BookingsPage() {
   const toast = useRef(null);
   const cm = useRef(null);
   useEffect(() => {
-    fetch("/api/getBookings")
+    fetch("/api/addBookings")
       .then((res) => res.json())
       .then((data) => setBookings(data.bookings));
   }, []);
